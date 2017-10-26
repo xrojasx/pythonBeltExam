@@ -4,20 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Show</title>
 </head>
 <body>
-    <a href="/quotes">Dashboard</a>
-    <a href="/logout">Logout</a>
-    <h1>Posts by {{user.name}} </h1>
-    <p>Count:{{user.posted_by.all | length}}</p>
-
-    {% for quote in quotes %}
-        <div>
-            
-            <span>{{quote.author}}:</span>
-            {{quote.content}}
-        </div>
-    {% endfor %}   
+    <h5><a href="/logout">Log out</a> | <a href="/travel">Home</a></h5>
+    <div>
+        <table class="table table-striped">
+            <tbody>
+                <thead>
+                    <th><h3>{{trip.destination}}</h3></th>
+                </thead>
+                <tr>
+                    <td><b>Planed By:</b>  {{trip.creator.name}}</td>
+                </tr>
+                <tr>
+                    <td><b>Description:</b>  {{trip.description}}</td>
+                </tr>
+                <tr>
+                    <td><b>Travel Date From:</b>  {{trip.start}}</td>
+                </tr>
+                <tr>
+                    <td><b>Travel Date To:</b>  {{trip.end}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        <br>
+    <div>
+        <h4>Other User's Joining the Trip</h4>
+            {%for user in others%}
+                <h5> {{user.name}}</h5>
+            {%endfor%}
+        <br>
+            {%if trip.creator.id == user.id%}
+                <h5><a href="/delete/{{trip.id}}">Delete</a></h5>
+            {%endif%}
 </body>
 </html>

@@ -17,7 +17,7 @@ def register(request):
         return redirect('/')
     request.session['user_id'] = result.id
     messages.success(request, "You are now registered!")
-    return redirect('/quotes')
+    return redirect('/travel')
 
 def login(request):
     result = User.objects.login_validator(request.POST)
@@ -27,62 +27,64 @@ def login(request):
         return redirect('/')
     request.session['user_id'] = result.id
     messages.success(request, "You are logged in!")
-    return redirect('/quotes')
+    return redirect('/travel')
 
-def user(request, id):
-	user =  User.objects.get(id = id)
-	context = {
-		'user': user,
-		'quotes': user.posted_by.all()		
-	}
-	return render(request, 'users/show.html', context)
+def travel(request):
+    user = current_user(request)
+    context = {
+        "user": User.objects.get(id=request.session['user_id']),
+        "travels" : Trip.objects.all(),
+        "others": Trip.objects.all().exclude(join__id=request.session['user_id'])
+    }
+    return render(request, 'users/success.html', context)
 
-def quotes(request):
-	user = current_user(request)
-	context = {
-		'user': user,
-		'quotable_quotes': Quote.objects.exclude(favorite = user),
-		'favorite': user.favorite.all()
-	}
-	return render(request, 'users/success.html', context)
+def addtrip(request):
+    context= {
+        "user":User.objects.get(id=request.session['user_id']),
+    }
+    return render(request, 'users/addtrip.html', context)
 
-def success(request):
+def createtrip(request):
     if request.method != 'POST':
-		return redirect('/')
-	
-    check = Quote.objects.validate_quote(request.POST)
-    if request.method != 'POST':
-		return redirect('/quotes')
-    if check[0] == False:
-		for error in check[1]:
-			messages.add_message(request, messages.INFO, error, extra_tags="add_item")
-			return redirect('/quotes')
-    if check[0] == True:
+        return redirect ("/addtrip")
+    newtrip= Trip.objects.new_trip(request.POST, request.session["user_id"])
+    if newtrip[0] == True:
+        return redirect('/travel')
+    else:
+        for message in newtrip[1]:
+            messages.error(request, message)
+        return redirect('/addtrip')
 
-		quote = Quote.objects.create(
-			content = request.POST.get('content'),
-			user = current_user(request),
-			author = request.POST.get('author')
-			)
+def show(request, trip_id):
+    try:
+        trip= Trip.objects.get(id=trip_id)
+    except Trip.DoesNotExist:
+        messages.info(request,"Travel Not Found")
+        return redirect('/travel')
+    context={
+        "trip": trip,
+        "user":User.objects.get(id=request.session['user_id']),
+        "others": User.objects.filter(joiner__id=trip.id).exclude(id=trip.creator.id),
+    }
+    return render(request, 'users/show.html', context)
 
-		return redirect('/quotes')
-    return redirect('/quotes')
+def join(request, trip_id):
+    if request.method == "GET":
+        messages.error(request,"What trip?")
+        return redirect('/')
+    joiner= Trip.objects.join(request.session["user_id"], trip_id)
+    if 'errors' in joiner:
+        messages.error(request, joiner['errors'])
+    return redirect('/travel')
 
-def addfav(request, id):
-	user = current_user(request)
-	favorite = Quote.objects.get(id=id)
-
-	user.favorite.add(favorite)
-
-	return redirect('/quotes')
-
-def removefav(request, id):
-	user = current_user(request)
-	favorite = Quote.objects.get(id=id)
-
-	user.favorite.remove(favorite)
-
-	return redirect('/quotes')
+def delete(request, id):
+    try:
+        target= Trip.objects.get(id=id)
+    except Trip.DoesNotExist:
+        messages.info(request,"Message Not Found")
+        return redirect('/travel')
+    target.delete()
+    return redirect('/travel')
 
 def logout(request):
     request.session.clear()

@@ -14,7 +14,9 @@
         {% endfor %}
     </div>
     {% endif %}
-    <h2>Registration</h2>
+    <h2>Welcome!</h2>
+    <br>
+    <h4>Registration</h4>
     <form action="/register" method="POST">
         {% csrf_token %}
         <div>
@@ -22,12 +24,8 @@
             <input type="text" name="name">
         </div>
         <div>
-            <label for="alias">Alias</label>
-            <input type="text" name="alias">
-        </div>
-        <div>ls
-            <label for="email">Email</label>
-            <input type="email" name="email">
+            <label for="username">Username</label>
+            <input type="text" name="username">
         </div>
         <div>
             <label for="password">Password</label>
@@ -37,18 +35,14 @@
             <label for="password_confirm">Confirm Password</label>
             <input type="password" name="password_confirm">
         </div>
-        <div>
-            <label for="dob">Date of Birth</label>
-            <input type="date" name="dob">
-         </div>
         <input type="submit" value='Register'>
     </form>
-    <h2>Login</h2>
+    <h4>Login</h4>
     <form action="/login" method="POST">
         {% csrf_token %}
         <div>
-            <label for="email">Email</label>
-            <input type="email" name="email">
+            <label for="username">Username</label>
+            <input type="text" name="username">
         </div>
         <div>
             <label for="password">Password</label>

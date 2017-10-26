@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Trip</title>
+</head>
+<body>
+    <h5><a href="/logout">Log out</a> | <a href="/travel">Home</a></h5>
+    <h5>Hello, {{user.name}} </h5>
+    <div>
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <div>
+            <form action="/createtrip" method="POST">
+                <div>
+                {% csrf_token %}
+                <textarea name="destination" placeholder="Destination"></textarea>
+                <textarea name="description" placeholder="Description"></textarea>
+                <label for="start">Travel Date From</label>
+                <input name="start"  type="date" placeholder="Travel Date From~">
+                <label for="end">Travel Date To</label>
+                <input name="end" type="date" placeholder="Travel Date To">
+                <button type="submit">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -4,10 +4,11 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^register$', views.register),
     url(r'^login$', views.login),
+    url(r'^travel$', views.travel),
+    url(r'^addtrip$', views.addtrip),
+    url(r'^createtrip$', views.createtrip),
+    url(r'^show/(?P<trip_id>\d+)$', views.show),
+    url(r'^join/(?P<trip_id>\d+)$', views.join),
     url(r'^logout$', views.logout),
-    url(r'^quotes$', views.quotes),
-    url(r'^success$', views.success),
-    url(r'^addfav/(?P<id>\d+)$', views.addfav),
-    url(r'^removefav/(?P<id>\d+)$', views.removefav),
-    url(r'^users/(?P<id>\d+)$', views.user)
+    url(r'^delete/(?P<id>\d+)$', views.delete)
 ]
